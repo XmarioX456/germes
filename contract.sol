@@ -1,17 +1,68 @@
-pragma solidity 0.8.2;
+pragma solidity 0.8.0;
 
 //import "https://github.com/pancakeswap/pancake-swap-periphery/blob/master/contracts/interfaces/IPancakeRouter01.sol";
 //import "https://github.com/binance-chain/bsc-genesis-contract/blob/master/contracts/interface/IBEP20.sol";
 
-interface IPancakeRouter01 {
-   function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline)
-        external
-        payable
-        returns (uint[] memory amounts);
+interface IBEP20 {
+    function totalSupply() external view returns (uint256);
+    function decimals() external view returns (uint8);
+    function symbol() external view returns (string memory);
+    function getOwner() external view returns (address);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address _owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-interface IBEP20 {
-   function balanceOf(address account) external view returns (uint256);
+interface IPancakeRouter01 {
+   function swapExactETHForTokens(
+      uint amountOutMin,
+      address[] calldata path,
+      address to,
+      uint deadline
+   )
+      external
+      payable
+      returns (uint[] memory amounts);
+
+   function swapExactTokensForETH(
+      uint amountIn,
+      uint amountOutMin,
+      address[] calldata path,
+      address to,
+      uint deadline
+   )
+      external
+      returns (uint[] memory amounts);
+
+   function swapExactTokensForTokens(
+      uint amountIn,
+      uint amountOutMin,
+      address[] calldata path,
+      address to,
+      uint deadline
+   )
+      external
+      returns (uint[] memory amounts);
+
+   function getAmountsOut(
+      uint amountIn,
+      address[] calldata path
+   )
+      external
+      view
+      returns (uint[] memory amounts);
+
+   function getAmountsIn(
+      uint amountOut,
+      address[] calldata path
+   )
+      external
+      view
+      returns (uint[] memory amounts);
 }
 
 contract germesContract {
@@ -54,23 +105,31 @@ contract germesContract {
       }
    }
 
-   /*function multiswap(uint256 amountIn, address[] calldata path) external payable {
+   function multiswap(uint256 amountIn, address[] calldata path) external payable returns (uint8[] memory) {
       require(isUser(msg.sender), "Germes: ACCESS_DENIED");
-      if (path[0] == WBNB) {
+      /*if (path[0] == WBNB) {
          
       } else {
          IBEP20(path[0]).transferFrom(msg.sender, address(this), amountIn);
-      }
+      }*/
+      uint8[] memory testresult;
       for (uint i = 0; i < path.length; ++i) {
          address token0 = path[i];
          address token1 = path[i+1];
          address[2] memory ticker = [token0, token1];
+         if (token0 == WBNB) {
+            testresult[i] = 1;
+         } else if (token1 == WBNB) {
+            testresult[i] = 2;
+         } else {
+            testresult[i] = 3;
+         }
+         return testresult;
 
-         //swap(0, );
       }
-   }*/
+   }
 
-   function swapBNBForToken(address token1) external payable {
+   /*function swapBNBForToken(address token1) external payable {
       address[] memory path = new address[](2);
       path[0] = WBNB;
       path[1] = token1;
@@ -78,9 +137,9 @@ contract germesContract {
          0,
          path,
          msg.sender,
-         block.timestamp + 100
+         10000000000
       );
-   }
+   }*/
 
    function getOwner() external view returns (address) {
       return owner;
