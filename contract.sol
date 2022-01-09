@@ -1,7 +1,6 @@
 pragma solidity 0.8.0;
 
-//import "https://github.com/pancakeswap/pancake-swap-periphery/blob/master/contracts/interfaces/IPancakeRouter01.sol";
-//import "https://github.com/binance-chain/bsc-genesis-contract/blob/master/contracts/interface/IBEP20.sol";
+
 
 interface IBEP20 {
     function totalSupply() external view returns (uint256);
@@ -70,11 +69,13 @@ contract germesContract {
    address owner;
    address[] users;
    address WBNB;
+   address pancakeRouterAddress;
 
    constructor() {
       owner = msg.sender;
       users.push(owner);
       WBNB = 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd;
+      pancakeRouterAddress = 0xD99D1c33F9fC3444f8101754aBC46c52416550D1;
    }
 
    function isUser(address _address) public view returns (bool) {
@@ -105,41 +106,81 @@ contract germesContract {
       }
    }
 
-   function multiswap(uint256 amountIn, address[] calldata path) external payable returns (uint8[] memory) {
+   function multiswap(uint256 amountIn, address[] calldata path) external payable {
+
       require(isUser(msg.sender), "Germes: ACCESS_DENIED");
-      /*if (path[0] == WBNB) {
-         
+      if (path[0] == WBNB) {
+         require(amountIn == msg.value, "Germes: INVALID_INPUT");
       } else {
          IBEP20(path[0]).transferFrom(msg.sender, address(this), amountIn);
-      }*/
-      uint8[] memory testresult;
+      }
+
       for (uint i = 0; i < path.length; ++i) {
          address token0 = path[i];
          address token1 = path[i+1];
-         address[2] memory ticker = [token0, token1];
-         if (token0 == WBNB) {
-            testresult[i] = 1;
-         } else if (token1 == WBNB) {
-            testresult[i] = 2;
+         address[] memory shortPath = new address[](2);
+         shortPath[0] = path[i];
+         shortPath[1] = path[i+1];
+         address receiver;
+         uint256 amountOut;
+
+         if (i == path.length-1) {
+            receiver = msg.sender;
          } else {
-            testresult[i] = 3;
+            receiver = address(this);
          }
-         return testresult;
+         if (i == 0) {
+            amountOut = amountIn;
+         }
+
+         if (token0 == WBNB) {
+            amountOut = IPancakeRouter01(pancakeRouterAddress).swapExactETHForTokens{value: msg.value}(
+               0,
+               shortPath,
+               receiver,
+               block.timestamp + 100
+            )[0];
+
+         } else if (token1 == WBNB) {
+            IBEP20(token0).approve(pancakeRouterAddress, amountOut);
+            amountOut = IPancakeRouter01(pancakeRouterAddress).swapExactTokensForETH(
+               amountOut,
+               0,
+               shortPath,
+               receiver,
+               block.timestamp + 100
+            )[0]; 
+
+         } else {
+            IBEP20(token0).approve(pancakeRouterAddress, amountOut);
+            amountOut = IPancakeRouter01(pancakeRouterAddress).swapExactTokensForTokens(
+               amountOut,
+               0,
+               shortPath,
+               receiver,
+               block.timestamp + 100
+            )[0];
+         }
 
       }
    }
 
-   /*function swapBNBForToken(address token1) external payable {
+   function swapBNBForToken(address token1) external payable returns (uint[] memory) {
       address[] memory path = new address[](2);
       path[0] = WBNB;
       path[1] = token1;
-      IPancakeRouter01(0xD99D1c33F9fC3444f8101754aBC46c52416550D1).swapExactETHForTokens{value: msg.value}(
+      uint[] memory amounts = IPancakeRouter01(0xD99D1c33F9fC3444f8101754aBC46c52416550D1).swapExactETHForTokens{value: msg.value}(
          0,
          path,
          msg.sender,
          10000000000
       );
-   }*/
+      return amounts;
+   }
+
+   function swapTokenForBNB(address token0, uint256 amount) external {
+      IBEP20(token0).transferFrom(msg.sender, address(this), amount);
+   }
 
    function getOwner() external view returns (address) {
       return owner;
