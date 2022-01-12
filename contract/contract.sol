@@ -17,6 +17,9 @@ interface IBEP20 {
 }
 
 interface IPancakeRouter01 {
+
+   function WETH() external pure returns (address);
+
    function swapExactETHForTokens(
       uint amountOutMin,
       address[] calldata path,
@@ -68,14 +71,14 @@ contract germesContract {
 
    address owner;
    address[] users;
-   address WBNB;
-   address pancakeRouterAddress;
+   address WETH;
+   address routerAddress = 0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3;
+   IPancakeRouter01 router = IPancakeRouter01(routerAddress);
 
    constructor() {
       owner = msg.sender;
       users.push(owner);
-      WBNB = 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd;
-      pancakeRouterAddress = 0xD99D1c33F9fC3444f8101754aBC46c52416550D1;
+      WETH = router.WETH();
    }
 
    receive() payable external {}
@@ -89,7 +92,7 @@ contract germesContract {
       return false;
    }
 
-   function transferOwnership(address newOwner) external {
+   function transferOwnership(address newOwner) external  {
       require(msg.sender == owner, "Germes: ACCESS_DENIED");
       owner = newOwner;
    }
@@ -108,105 +111,58 @@ contract germesContract {
       }
    }
 
-   event iterationLog(
-      uint8 indexed i,
-      uint[] indexed amounts
-
-   );
-
-   event stepLog(
-      uint i
-   );
-
-   function multiswap(uint256 amountIn, address[] calldata path) external payable {
-      emit stepLog(1);
-      require(isUser(msg.sender), "Germes: ACCESS_DENIED");
-      if (path[0] == WBNB) {
+   function multyswap(uint256 amountIn, address[] calldata path) external payable {
+      if (path[0] == WETH) {
          require(amountIn == msg.value, "Germes: INVALID_INPUT");
       } else {
          IBEP20(path[0]).transferFrom(msg.sender, address(this), amountIn);
       }
-      emit stepLog(2);
 
       for (uint i = 0; i < path.length-1; ++i) {
-         address token0 = path[i];
-         address token1 = path[i+1];
-         address[] memory shortPath = new address[](2);
-         shortPath[0] = path[i];
-         shortPath[1] = path[i+1];
          address receiver;
-         uint256 amountOut;
-         uint[] memory result;
+         address[] memory tempPath = new address[](2);
+
+         tempPath[0] = path[i];
+         tempPath[1] = path[i+1];
 
          if (i == path.length-2) {
             receiver = msg.sender;
          } else {
             receiver = address(this);
          }
-         if (i == 0) {
-            amountOut = amountIn;
-         }
 
-         if (token0 == WBNB) {
-            result = IPancakeRouter01(pancakeRouterAddress).swapExactETHForTokens{value: msg.value}(
+         if (path[i] == WETH) {
+            router.swapExactETHForTokens{value: msg.value}(
                0,
-               shortPath,
+               tempPath,
                receiver,
                block.timestamp + 100
             );
-            amountOut = result[1];
+            amountIn = address(this).balance;
 
-         } else if (token1 == WBNB) {
-            IBEP20(token0).approve(pancakeRouterAddress, amountOut);
-            result = IPancakeRouter01(pancakeRouterAddress).swapExactTokensForETH(
-               amountOut,
+         } else if (path[i+1] == WETH) {
+            IBEP20(path[i]).approve(routerAddress, amountIn);
+            router.swapExactTokensForETH(
+               amountIn,
                0,
-               shortPath,
+               tempPath,
                receiver,
                block.timestamp + 100
             );
-            amountOut = result[1];
+            amountIn = IBEP20(tempPath[1]).balanceOf(receiver);
 
          } else {
-            IBEP20(token0).approve(pancakeRouterAddress, amountOut);
-            result = IPancakeRouter01(pancakeRouterAddress).swapExactTokensForTokens(
-               amountOut,
+            IBEP20(path[i]).approve(routerAddress, amountIn);
+            router.swapExactTokensForTokens(
+               amountIn,
                0,
-               shortPath,
+               tempPath,
                receiver,
                block.timestamp + 100
-            );          
-            amountOut = result[1];
+            );
+            amountIn = IBEP20(tempPath[1]).balanceOf(receiver);
          }
-
       }
-   }
-
-   function swap(uint256 amountIn, address[] calldata path) external payable { 
-      require(path[0] == WBNB, "Germes: INVALID_ENTRY_POINT");
-      address[] memory shortPath = new address[](2);
-      shortPath[0] = path[0];
-      shortPath[1] = path[1];
-      IPancakeRouter01(pancakeRouterAddress).swapExactETHForTokens{value: msg.value}(
-         0,
-         shortPath,
-         address(this),
-         block.timestamp + 100
-      );
-   }
-
-
-   function swapBNBForToken(address token1) external payable returns (uint[] memory) {
-      address[] memory path = new address[](2);
-      path[0] = WBNB;
-      path[1] = token1;
-      uint[] memory amounts = IPancakeRouter01(0xD99D1c33F9fC3444f8101754aBC46c52416550D1).swapExactETHForTokens{value: msg.value}(
-         0,
-         path,
-         msg.sender,
-         10000000000
-      );
-      return amounts;
    }
 
    function getOwner() external view returns (address) {
@@ -218,7 +174,7 @@ contract germesContract {
    }
 
    function balanceOf(address token) external view returns(uint256) {
-      if (token == WBNB) {
+      if (token == WETH) {
          return address(this).balance;
       } else {
          return IBEP20(token).balanceOf(address(this));

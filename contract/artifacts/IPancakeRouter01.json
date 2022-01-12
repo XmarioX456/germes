@@ -47,6 +47,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
+			"WETH()": "ad5c4648",
 			"getAmountsIn(uint256,address[])": "1f00ca74",
 			"getAmountsOut(uint256,address[])": "d06ca61f",
 			"swapExactETHForTokens(uint256,address[],address,uint256)": "7ff36ab5",
@@ -55,6 +56,19 @@
 		}
 	},
 	"abi": [
+		{
+			"inputs": [],
+			"name": "WETH",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "pure",
+			"type": "function"
+		},
 		{
 			"inputs": [
 				{

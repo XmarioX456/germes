@@ -11,38 +11,6 @@
 				"type": "constructor"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "uint8",
-						"name": "i",
-						"type": "uint8"
-					},
-					{
-						"indexed": true,
-						"internalType": "uint256[]",
-						"name": "amounts",
-						"type": "uint256[]"
-					}
-				],
-				"name": "iterationLog",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "i",
-						"type": "uint256"
-					}
-				],
-				"name": "stepLog",
-				"type": "event"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -158,45 +126,8 @@
 						"type": "address[]"
 					}
 				],
-				"name": "multiswap",
+				"name": "multyswap",
 				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amountIn",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address[]",
-						"name": "path",
-						"type": "address[]"
-					}
-				],
-				"name": "swap",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "token1",
-						"type": "address"
-					}
-				],
-				"name": "swapBNBForToken",
-				"outputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "",
-						"type": "uint256[]"
-					}
-				],
 				"stateMutability": "payable",
 				"type": "function"
 			},
@@ -246,10 +177,10 @@
 	},
 	"sources": {
 		"contract/contract.sol": {
-			"keccak256": "0x0693763c3379616e199f99a50a832bfaffd170595f641647ff6521a29b449ccc",
+			"keccak256": "0x2802e33ceb002aa3eca484f9f2c9beddf98f18a9804e58d2d4a50acbb04ab642",
 			"urls": [
-				"bzz-raw://226a22c24f40cfc8592a61ee2ae16914a3019b801abc0b1f18e0a0587a527e39",
-				"dweb:/ipfs/QmXHihf3ZEqPpQsVsKZ66QBoA9onwqPtnMd9j7N4nvpipR"
+				"bzz-raw://f6c2ac28c7ce3c854555ef7501745bb7191c7fd7513c17f25f78cabbfed1de3a",
+				"dweb:/ipfs/QmRQWrKfep4w44L55rX8Rg4xjyrXbUpNoFLSZtCopbQqBi"
 			]
 		}
 	},
