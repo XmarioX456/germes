@@ -256,10 +256,10 @@
 	},
 	"sources": {
 		"contract/contract.sol": {
-			"keccak256": "0x2802e33ceb002aa3eca484f9f2c9beddf98f18a9804e58d2d4a50acbb04ab642",
+			"keccak256": "0x1473d662960843d96b06d35c5114359b7dc55dee1d1186a14dce75ef88841d7d",
 			"urls": [
-				"bzz-raw://f6c2ac28c7ce3c854555ef7501745bb7191c7fd7513c17f25f78cabbfed1de3a",
-				"dweb:/ipfs/QmRQWrKfep4w44L55rX8Rg4xjyrXbUpNoFLSZtCopbQqBi"
+				"bzz-raw://57893d5dd2312f5383114d167f6e28e44c9870119f08ff65b8ff1939cef71021",
+				"dweb:/ipfs/QmYJEGwR5h8uvMkX6hjFtUQxvghkVKTDmCBwbTQ3TdLE81"
 			]
 		}
 	},
