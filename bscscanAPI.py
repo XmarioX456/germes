@@ -1,10 +1,34 @@
 from requests import get
-import json
+import json, requests
 import config
-def getTransaction(hash):
-    url = f"https://api.bscscan.com/api?module=account&action=txlistinternal&txhash={hash}&apikey={config.BSCAPIKey}"
-    response = get(url)
-    print(response.json())
+import dbms
 
-    #print(j)
-getTransaction("0x534ab2ad654f65201517f35136ac42578b3b497deed282722ee4b5708bf99adc")
+
+class BSCscaner:
+
+    endpoint = "https://api.bscscan.com/api"
+
+    def __init__(self, apiKey):
+        self.apiKey = apiKey
+        self.apiKeyEndpoint = "&apikey="+self.apiKey
+
+    def verify(self, address):
+        action = "?module=contract&action=getabi"
+        address = "&address=" + address
+        url = self.endpoint+action+address+self.apiKeyEndpoint
+        response = requests.get(url).json()
+        return response["message"] == "OK"
+
+    def getContractABI(self, address):
+        action = "?module=contract&action=getabi"
+        address = "&address=" + address
+        url = self.endpoint+action+address+self.apiKeyEndpoint
+        response = requests.get(url).json()["result"]
+        return response
+
+    def getContractSourceCode(self, address):
+        pass
+
+if __name__ == "__main__":
+    scaner = BSCscaner(config.BSCAPIKey)
+    print(scaner.verify())
