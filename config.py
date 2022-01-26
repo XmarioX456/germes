@@ -1,11 +1,13 @@
 #blockchain node provider
-BSCURL = "https://bsc-dataseed1.binance.org:443"
-BSCTestnetURL = "https://data-seed-prebsc-1-s1.binance.org:8545/"
+BSCURL = "https://bsc-dataseed1.ninicoin.io/"
+BSCTestnetURL = "https://data-seed-prebsc-2-s1.binance.org:8545/"
 
 #bscscan
 BSCAPIKey = "83TT1Q33VJZCK38MRZVK4XACZ5V7HJG27Z"
 
 #blockchain
+contractAddress = "0x770f363cC025DA78bcb6A014cc4464888ac878aF"
+
 wallet = "0x2e3aA43DDc1d440D7dEaA7f1f152cC4FA6373767"
 key = "9fd69e2802fa79f80bf1da4a69a2d14b3d0482ffeeffec104451440bfc272d53"
 
