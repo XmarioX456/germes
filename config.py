@@ -1,5 +1,21 @@
 #blockchain node provider
-BSCURL = "https://bsc-dataseed1.ninicoin.io/"
+BSCURLproviders = [
+	"https://bsc-dataseed4.binance.org/",
+	"https://bsc-dataseed.binance.org/",
+	"https://bsc-dataseed1.defibit.io/",
+	"https://bsc-dataseed1.ninicoin.io/",
+	"https://bsc-dataseed2.defibit.io/",
+	"https://bsc-dataseed3.defibit.io/",
+	"https://bsc-dataseed4.defibit.io/",
+	"https://bsc-dataseed2.ninicoin.io/",
+	"https://bsc-dataseed3.ninicoin.io/",
+	"https://bsc-dataseed4.ninicoin.io/",
+	"https://bsc-dataseed1.binance.org/",
+	"https://bsc-dataseed2.binance.org/",
+	"https://bsc-dataseed3.binance.org/",
+	"https://speedy-nodes-nyc.moralis.io/71bd7cb67dd9966166601587/bsc/mainnet",
+]
+BSCURLWebsocketProvider = "wss://bsc-ws-node.nariox.org:443"
 BSCTestnetURL = "https://data-seed-prebsc-2-s1.binance.org:8545/"
 
 #bscscan
